@@ -20,9 +20,9 @@
   .widget {
     background: rgba(255,255,255,0.1);
     border-radius: 18px;
-    padding: 18px 12px;
+    padding: 20px 15px;
     width: 100%;
-    max-width: 220px;
+    max-width: 200px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     backdrop-filter: blur(5px);
@@ -31,9 +31,9 @@
   .clock {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 6px;
     font-family: 'Mogula', sans-serif;
-    position: relative;
   }
 
   .flip {
@@ -43,66 +43,34 @@
     perspective: 1000px;
   }
 
-  .flip-card {
-    position: absolute;
+  .flip-number {
     width: 100%;
     height: 100%;
-  }
-
-  .flip-top, .flip-bottom {
-    width: 100%;
-    height: 50%;
     background: rgba(255,255,255,0.2);
     color: #000;
     border-radius: 10px;
     text-align: center;
-    line-height: 30px;
+    line-height: 60px;
     font-size: 28px;
-    overflow: hidden;
-    backface-visibility: hidden;
-    display: block;
     font-family: 'Mogula', sans-serif;
+    transition: transform 0.3s ease;
   }
 
-  .flip-top {
-    transform-origin: bottom;
-  }
-
-  .flip-bottom {
-    position: absolute;
-    bottom: 0;
-    transform-origin: top;
-  }
-
-  .flip.animate .flip-top {
-    animation: flipTop 0.5s forwards;
-  }
-
-  .flip.animate .flip-bottom {
-    animation: flipBottom 0.5s forwards;
-  }
-
-  @keyframes flipTop {
-    0% { transform: rotateX(0deg); }
-    100% { transform: rotateX(-90deg); }
-  }
-
-  @keyframes flipBottom {
-    0% { transform: rotateX(90deg); }
-    100% { transform: rotateX(0deg); }
+  .flip.animate .flip-number {
+    transform: rotateX(90deg);
   }
 
   .am-pm {
-    align-self: flex-end;
     font-size: 14px;
     margin-left: 4px;
     font-family: 'Mogula', sans-serif;
   }
 
+  /* Themes below the widget */
   .themes {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 12px;
   }
 
   .theme-circle {
@@ -125,16 +93,10 @@
 <div class="widget" id="widget">
   <div class="clock" id="clock">
     <div class="flip" id="hours">
-      <div class="flip-card">
-        <div class="flip-top">12</div>
-        <div class="flip-bottom">12</div>
-      </div>
+      <div class="flip-number">12</div>
     </div>
     <div class="flip" id="minutes">
-      <div class="flip-card">
-        <div class="flip-top">00</div>
-        <div class="flip-bottom">00</div>
-      </div>
+      <div class="flip-number">00</div>
     </div>
     <div class="am-pm" id="ampm">AM</div>
   </div>
@@ -149,8 +111,8 @@
 
 <script>
 const widget = document.getElementById('widget');
-const hoursFlip = document.getElementById('hours');
-const minutesFlip = document.getElementById('minutes');
+const hoursFlip = document.getElementById('hours').querySelector('.flip-number');
+const minutesFlip = document.getElementById('minutes').querySelector('.flip-number');
 const ampmDisplay = document.getElementById('ampm');
 const themeCircles = document.querySelectorAll('.theme-circle');
 
@@ -160,28 +122,23 @@ widget.style.background = currentTheme;
 let prevHour = null;
 let prevMinute = null;
 
+// Format number to 2 digits
 function pad(num) {
   return String(num).padStart(2,'0');
 }
 
 // Flip animation for number
-function flipNumber(flipDiv, newNumber) {
-  const top = flipDiv.querySelector('.flip-top');
-  const bottom = flipDiv.querySelector('.flip-bottom');
+function flipNumber(element, newNumber) {
+  if (element.textContent === newNumber) return;
 
-  if (top.textContent === newNumber) return; // No change
-
-  top.textContent = flipDiv.querySelector('.flip-bottom').textContent;
-  bottom.textContent = newNumber;
-
-  flipDiv.classList.add('animate');
+  element.style.transform = 'rotateX(90deg)';
   setTimeout(() => {
-    flipDiv.classList.remove('animate');
-    top.textContent = newNumber;
-  }, 500);
+    element.textContent = newNumber;
+    element.style.transform = 'rotateX(0deg)';
+  }, 300);
 }
 
-// Update HH:MM AM/PM
+// Update clock
 function updateClock() {
   const now = new Date();
   let h = now.getHours();
@@ -193,14 +150,8 @@ function updateClock() {
   const hStr = pad(h);
   const mStr = pad(m);
 
-  if (prevHour !== hStr) {
-    flipNumber(hoursFlip, hStr);
-    prevHour = hStr;
-  }
-  if (prevMinute !== mStr) {
-    flipNumber(minutesFlip, mStr);
-    prevMinute = mStr;
-  }
+  flipNumber(hoursFlip, hStr);
+  flipNumber(minutesFlip, mStr);
 
   ampmDisplay.textContent = ampm;
 }
