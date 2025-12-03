@@ -10,6 +10,7 @@
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -26,6 +27,7 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     backdrop-filter: blur(5px);
+    margin-bottom: 12px; /* Space for theme buttons */
   }
 
   .clock {
@@ -66,11 +68,11 @@
     font-family: 'Mogula', sans-serif;
   }
 
-  /* Themes below the widget */
-  .themes {
+  /* Themes outside the widget */
+  .themes-container {
     display: flex;
     justify-content: center;
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
   .theme-circle {
@@ -100,13 +102,13 @@
     </div>
     <div class="am-pm" id="ampm">AM</div>
   </div>
+</div>
 
-  <div class="themes" id="themes">
-    <div class="theme-circle" style="background: #ffe4e1;" data-theme="#ffe4e1"></div>
-    <div class="theme-circle" style="background: #d8bfd8;" data-theme="#d8bfd8"></div>
-    <div class="theme-circle" style="background: #fdf6e3;" data-theme="#fdf6e3"></div>
-    <div class="theme-circle" style="background: #cfe0e8;" data-theme="#cfe0e8"></div>
-  </div>
+<div class="themes-container" id="themes">
+  <div class="theme-circle" style="background: #ffdbe7;" data-theme="#ffdbe7"></div>
+  <div class="theme-circle" style="background: #acbda1;" data-theme="#acbda1"></div>
+  <div class="theme-circle" style="background: #ede8d0;" data-theme="#ede8d0"></div>
+  <div class="theme-circle" style="background: #d1e7ff;" data-theme="#d1e7ff"></div>
 </div>
 
 <script>
@@ -119,15 +121,11 @@ const themeCircles = document.querySelectorAll('.theme-circle');
 let currentTheme = localStorage.getItem('flipClockTheme') || "#ffe4e1";
 widget.style.background = currentTheme;
 
-let prevHour = null;
-let prevMinute = null;
-
-// Format number to 2 digits
 function pad(num) {
   return String(num).padStart(2,'0');
 }
 
-// Flip animation for number
+// Flip animation
 function flipNumber(element, newNumber) {
   if (element.textContent === newNumber) return;
 
@@ -152,7 +150,6 @@ function updateClock() {
 
   flipNumber(hoursFlip, hStr);
   flipNumber(minutesFlip, mStr);
-
   ampmDisplay.textContent = ampm;
 }
 
