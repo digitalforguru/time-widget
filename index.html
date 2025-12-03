@@ -4,11 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Soft-Girl Flip Clock Widget</title>
-<!-- Mogula font -->
 <link href="https://fonts.cdnfonts.com/css/mogula" rel="stylesheet">
 <style>
   body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
@@ -16,73 +14,71 @@
     align-items: center;
     height: 100%;
     background: transparent;
+    font-family: 'Arial', sans-serif;
   }
 
   .widget {
     background: rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 20px 15px;
-    text-align: center;
+    border-radius: 18px;
+    padding: 18px 12px;
     width: 100%;
-    max-width: 220px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    max-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     backdrop-filter: blur(5px);
-    position: relative;
   }
 
   .clock {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
     font-family: 'Mogula', sans-serif;
   }
 
   .flip {
     background: rgba(255,255,255,0.2);
     border-radius: 10px;
-    padding: 20px 12px;
-    width: 60px;
-    font-size: 32px;
+    padding: 12px 8px;
+    width: 50px;
+    font-size: 28px;
     color: #000;
     text-align: center;
     position: relative;
-    perspective: 1000px;
   }
 
   .flip-top, .flip-bottom {
-    background: inherit;
-    border-radius: 10px;
     display: block;
     height: 50%;
     overflow: hidden;
-    backface-visibility: hidden;
     line-height: 1.1;
   }
 
-  .flip-top {
-    transform-origin: bottom;
-  }
-
   .flip-bottom {
-    transform-origin: top;
     position: absolute;
     bottom: 0;
     width: 100%;
   }
 
+  .am-pm {
+    align-self: flex-end;
+    font-size: 14px;
+    margin-left: 4px;
+    font-family: 'Mogula', sans-serif;
+  }
+
   .themes {
     display: flex;
     justify-content: center;
-    margin-top: 12px;
+    margin-top: 10px;
   }
 
   .theme-circle {
-    width: 25px;
-    height: 25px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    margin: 0 5px;
+    margin: 0 4px;
     cursor: pointer;
-    border: 2px solid #fff;
+    border: 1px solid #fff;
     transition: transform 0.2s;
   }
 
@@ -96,14 +92,16 @@
 <div class="widget" id="widget">
   <div class="clock" id="clock">
     <div class="flip" id="hours">
-      <span class="flip-top">00</span>
-      <span class="flip-bottom">00</span>
+      <span class="flip-top">12</span>
+      <span class="flip-bottom">12</span>
     </div>
     <div class="flip" id="minutes">
       <span class="flip-top">00</span>
       <span class="flip-bottom">00</span>
     </div>
+    <div class="am-pm" id="ampm">AM</div>
   </div>
+
   <div class="themes" id="themes">
     <div class="theme-circle" style="background: #ffe4e1;" data-theme="#ffe4e1"></div>
     <div class="theme-circle" style="background: #d8bfd8;" data-theme="#d8bfd8"></div>
@@ -116,19 +114,26 @@
 const widget = document.getElementById('widget');
 const hoursFlip = document.getElementById('hours');
 const minutesFlip = document.getElementById('minutes');
+const ampmDisplay = document.getElementById('ampm');
 const themeCircles = document.querySelectorAll('.theme-circle');
 
 let currentTheme = localStorage.getItem('flipClockTheme') || "#ffe4e1";
 widget.style.background = currentTheme;
 
-// Update HH:MM
+// Update HH:MM AM/PM
 function updateClock() {
   const now = new Date();
-  const h = String(now.getHours()).padStart(2,'0');
-  const m = String(now.getMinutes()).padStart(2,'0');
+  let h = now.getHours();
+  const m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12;
+  h = h ? h : 12; // 12-hour format
+  const hStr = String(h).padStart(2,'0');
+  const mStr = String(m).padStart(2,'0');
 
-  hoursFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = h);
-  minutesFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = m);
+  hoursFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = hStr);
+  minutesFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = mStr);
+  ampmDisplay.textContent = ampm;
 }
 
 setInterval(updateClock, 1000);
