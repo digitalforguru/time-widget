@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soft-Girl Flip Clock Widget</title>
+<!-- Mogula font -->
+<link href="https://fonts.cdnfonts.com/css/mogula" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background: transparent;
+  }
+
+  .widget {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 20px 15px;
+    text-align: center;
+    width: 100%;
+    max-width: 220px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+    backdrop-filter: blur(5px);
+    position: relative;
+  }
+
+  .clock {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    font-family: 'Mogula', sans-serif;
+  }
+
+  .flip {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 20px 12px;
+    width: 60px;
+    font-size: 32px;
+    color: #000;
+    text-align: center;
+    position: relative;
+    perspective: 1000px;
+  }
+
+  .flip-top, .flip-bottom {
+    background: inherit;
+    border-radius: 10px;
+    display: block;
+    height: 50%;
+    overflow: hidden;
+    backface-visibility: hidden;
+    line-height: 1.1;
+  }
+
+  .flip-top {
+    transform-origin: bottom;
+  }
+
+  .flip-bottom {
+    transform-origin: top;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .themes {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .theme-circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 2px solid #fff;
+    transition: transform 0.2s;
+  }
+
+  .theme-circle:hover {
+    transform: scale(1.2);
+  }
+</style>
+</head>
+<body>
+
+<div class="widget" id="widget">
+  <div class="clock" id="clock">
+    <div class="flip" id="hours">
+      <span class="flip-top">00</span>
+      <span class="flip-bottom">00</span>
+    </div>
+    <div class="flip" id="minutes">
+      <span class="flip-top">00</span>
+      <span class="flip-bottom">00</span>
+    </div>
+  </div>
+  <div class="themes" id="themes">
+    <div class="theme-circle" style="background: #ffe4e1;" data-theme="#ffe4e1"></div>
+    <div class="theme-circle" style="background: #d8bfd8;" data-theme="#d8bfd8"></div>
+    <div class="theme-circle" style="background: #fdf6e3;" data-theme="#fdf6e3"></div>
+    <div class="theme-circle" style="background: #cfe0e8;" data-theme="#cfe0e8"></div>
+  </div>
+</div>
+
+<script>
+const widget = document.getElementById('widget');
+const hoursFlip = document.getElementById('hours');
+const minutesFlip = document.getElementById('minutes');
+const themeCircles = document.querySelectorAll('.theme-circle');
+
+let currentTheme = localStorage.getItem('flipClockTheme') || "#ffe4e1";
+widget.style.background = currentTheme;
+
+// Update HH:MM
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+
+  hoursFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = h);
+  minutesFlip.querySelectorAll('.flip-top, .flip-bottom').forEach(span => span.textContent = m);
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Theme selection
+themeCircles.forEach(circle => {
+  circle.addEventListener('click', () => {
+    const color = circle.dataset.theme;
+    widget.style.background = color;
+    localStorage.setItem('flipClockTheme', color);
+  });
+});
+</script>
+
+</body>
+</html>
