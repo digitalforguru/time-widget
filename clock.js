@@ -60,13 +60,6 @@ function updateTime() {
 
   timeDisplay.textContent = timeString;
 }
-timeBtn.addEventListener("click", () => {
-  timeFormat = timeFormat === "24hr" ? "12hr" : "24hr";
-
-  localStorage.setItem("timeFormat", timeFormat);
-
-  updateTime();
-});
 
 const sizeBtn = document.getElementById("sizeBtn");
 
@@ -91,9 +84,6 @@ document.querySelectorAll(".size-option").forEach(option => {
   });
 });
 
-if (!sizeBtn?.contains(e.target) && !sizeOptions?.contains(e.target)) {
-  sizeOptions?.classList.add("hidden");
-}
 /* ---------------- THEME ---------------- */
 function setTheme(theme) {
   state.theme = theme;
@@ -170,10 +160,14 @@ document.addEventListener("click", (e) => {
   if (!fontBtn?.contains(e.target) && !fontOptions?.contains(e.target)) {
     fontOptions?.classList.add("hidden");
   }
+
+  // ✨ ADD THIS
+  if (!sizeBtn?.contains(e.target) && !sizeOptions?.contains(e.target)) {
+    sizeOptions?.classList.add("hidden");
+  }
 });
 
 setInterval(updateTime, 1000);
-updateTime();
 
 updateTime();
 setTheme(state.theme);
