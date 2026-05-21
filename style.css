@@ -237,6 +237,7 @@ html.embed-mode .builder-ui {
   padding: 14px 12px;
   box-sizing: border-box;
   margin: 0 !important;
+  border-radius: 20px;
 
   display: flex;
   justify-content: center;
